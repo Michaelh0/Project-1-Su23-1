@@ -179,23 +179,24 @@ def uniformCostSearch(problem: SearchProblem):
     trackingpops = []
 
     direct = []
-
+    costtracker = {}
     direction = 0
-
+    newcost = 0
     stack = util.PriorityQueue()
+    costtracker[problem.getStartState()] = 0
     for i in problem.getSuccessors(problem.getStartState()):
         stack.push((problem.getStartState(),i),i[2])
-
+        costtracker[i[0]] = i[2]
     popped = stack.pop()
     while not problem.isGoalState(popped[1][0]):
         if not (popped[1][0] in prevLocation):
-            #print (popped)
             for i in problem.getSuccessors(popped[1][0]):
-                stack.push((popped[1][0],i),i[2])
+                newcost = i[2] + costtracker[popped[1][0]]
+                stack.push((popped[1][0],i), newcost)
+                costtracker[i[0]] = newcost
             prevLocation.add((popped[1][0]))
             trackingpops = trackingpops + [popped]
         popped = stack.pop()
-        
     trackingpops = trackingpops + [popped]
     #print(popped)
     next_direction = 0
