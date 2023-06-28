@@ -86,18 +86,131 @@ def depthFirstSearch(problem: SearchProblem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #print("Start:", problem.getStartState())
+   # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+   # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+   
+    prevLocation = set()
+    prevLocation.add(problem.getStartState())
+
+    trackingpops = []
+
+    direct = []
+
+    direction = 0
+
+    stack = util.Stack()
+    for i in problem.getSuccessors(problem.getStartState()):
+        stack.push((problem.getStartState(),i))
+
+    popped = stack.pop()
+    while not problem.isGoalState(popped[1][0]):
+        if not (popped[1][0] in prevLocation):
+            #print (popped)
+            for i in problem.getSuccessors(popped[1][0]):
+                stack.push((popped[1][0],i))
+            prevLocation.add((popped[1][0]))
+            trackingpops = trackingpops + [popped]
+        popped = stack.pop()
+        
+    trackingpops = trackingpops + [popped]
+    #print(popped)
+    next_direction = 0
+    direction = trackingpops.pop()
+    while len(trackingpops) != 0:
+        next_direction = trackingpops.pop()
+        #print(direction[0], next_direction[1][0])
+        if direction[0] == next_direction[1][0]:
+            direct = direct + [direction[1][1]] #[compass]
+            direction = next_direction
+            
+    direct = direct + [direction[1][1]]#[compass]
+    direct.reverse()
+    #print(direct)
+    return direct
+    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    prevLocation = set()
+    prevLocation.add(problem.getStartState())
+
+    trackingpops = []
+
+    direct = []
+
+    direction = 0
+
+    queue = util.Queue()
+    for i in problem.getSuccessors(problem.getStartState()):
+        queue.push((problem.getStartState(),i))
+
+    popped = queue.pop()
+    while not problem.isGoalState(popped[1][0]):
+        if not (popped[1][0] in prevLocation):
+            #print (popped)
+            for i in problem.getSuccessors(popped[1][0]):
+                queue.push((popped[1][0],i))
+            prevLocation.add((popped[1][0]))
+            trackingpops = trackingpops + [popped]
+        popped = queue.pop()
+        
+    trackingpops = trackingpops + [popped]
+    #print(popped)
+    next_direction = 0
+    direction = trackingpops.pop()
+    while len(trackingpops) != 0:
+        next_direction = trackingpops.pop()
+        #print(direction[0], next_direction[1][0])
+        if direction[0] == next_direction[1][0]:
+            direct = direct + [direction[1][1]] #[compass]
+            direction = next_direction
+            
+    direct = direct + [direction[1][1]]#[compass]
+    direct.reverse()
+    #print(direct)
+    return direct
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    prevLocation = set()
+    prevLocation.add(problem.getStartState())
+
+    trackingpops = []
+
+    direct = []
+
+    direction = 0
+
+    stack = util.PriorityQueue()
+    for i in problem.getSuccessors(problem.getStartState()):
+        stack.push((problem.getStartState(),i),i[2])
+
+    popped = stack.pop()
+    while not problem.isGoalState(popped[1][0]):
+        if not (popped[1][0] in prevLocation):
+            #print (popped)
+            for i in problem.getSuccessors(popped[1][0]):
+                stack.push((popped[1][0],i),i[2])
+            prevLocation.add((popped[1][0]))
+            trackingpops = trackingpops + [popped]
+        popped = stack.pop()
+        
+    trackingpops = trackingpops + [popped]
+    #print(popped)
+    next_direction = 0
+    direction = trackingpops.pop()
+    while len(trackingpops) != 0:
+        next_direction = trackingpops.pop()
+        #print(direction[0], next_direction[1][0])
+        if direction[0] == next_direction[1][0]:
+            direct = direct + [direction[1][1]] #[compass]
+            direction = next_direction
+            
+    direct = direct + [direction[1][1]]#[compass]
+    direct.reverse()
+    #print(direct)
+    return direct
 
 def nullHeuristic(state, problem=None):
     """
