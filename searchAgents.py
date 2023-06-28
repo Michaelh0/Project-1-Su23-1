@@ -398,7 +398,8 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     for i in corners:
         xy1 = i
         xy2 = state[0]
-        sum = sum + [abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])]
+        total = abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+        sum = sum + [total]
 
     return min(sum)# Default to trivial solution
 
@@ -493,8 +494,16 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    walls = problem.walls
+    sum = []
+    for i in foodGrid.asList():
+        xy1 = i
+        xy2 = position
+        total = abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+        sum = sum + [total]
+    if not foodGrid.asList():
+        return 0
+    return min(sum)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -524,8 +533,10 @@ class ClosestDotSearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        searchFunction = search.bfs
+        return searchFunction(problem)
+        
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -559,10 +570,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         complete the problem definition.
         """
         x,y = state
-
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
+        return self.food[x][y]
+        
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:
     """
     Returns the maze distance between any two points, using the search functions
