@@ -295,15 +295,20 @@ class CornersProblem(search.SearchProblem):
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        self.currentPosition = self.startingPosition
+        self.top_right = False
+        self.bot_right = False
+        self.top_left = False
+        self.bot_left = False
+        return (self.currentPosition, (self.top_right,self.bot_right,self.top_left,self.bot_left))
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        isGoal = (state[1][0] and state[1][1] and state[1][2] and state[1][3])
+
+        return isGoal
 
     def getSuccessors(self, state: Any):
         """
@@ -316,18 +321,34 @@ class CornersProblem(search.SearchProblem):
             is the incremental cost of expanding to that successor
         """
 
+        
+
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
+            x,y = state[0]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            top_right,bot_right,top_left,bot_left = state[1]
+            if state[0] in self.corners:
+                if state[0] == self.corners[0]:
+                    bot_left = True
+                elif state[0] == self.corners[1]:
+                    top_left = True
+                elif state[0] == self.corners[2]:
+                    bot_right = True
+                elif state[0] == self.corners[3]:
+                    top_right = True
 
-            "*** YOUR CODE HERE ***"
+            if not hitsWall:
+                nextState = ((nextx, nexty) , (top_right,bot_right,top_left,bot_left))
+                cost = 1
+                successors.append( ( nextState, action, cost) )                
 
         self._expanded += 1 # DO NOT CHANGE
+        
         return successors
 
     def getCostOfActions(self, actions):
