@@ -289,7 +289,7 @@ class CornersProblem(search.SearchProblem):
             if not startingGameState.hasFood(*corner):
                 print('Warning: no food in corner ' + str(corner))
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
-
+        
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
@@ -332,8 +332,6 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
-        
 
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
@@ -393,15 +391,21 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-
+    
+    count = []
+    counter = 0
     sum = []
     for i in corners:
         xy1 = i
         xy2 = state[0]
         total = abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+        for j in range(xy1[0] - xy2[0]):
+            counter += walls[j][xy1[1]]
+        for j in range(xy1[1] - xy2[1]):
+            counter += walls[xy1[0]][j]
+        count = count + [counter]
         sum = sum + [total]
-
-    return min(sum)# Default to trivial solution
+    return min(sum) + count
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -495,15 +499,22 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     walls = problem.walls
-    sum = []
+    sum = 0
+
     for i in foodGrid.asList():
         xy1 = i
         xy2 = position
-        total = abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
-        sum = sum + [total]
+        total = mazeDistance(xy2, xy1,problem.startingGameState) #abs(xy1[0] - xy2[0]) - abs(xy1[1] - xy2[1])
+        #print(mazeDistance(xy1, xy2,problem.startingGameState))
+        # square = 0
+        # for i in range(3):
+        #     for j in range(3):
+        #         square = square + foodGrid[(xy2[0] - 1 + i)][(xy2[1] - 1 + j)]
+        # print (square)
+        sum = sum + total
     if not foodGrid.asList():
         return 0
-    return min(sum)
+    return sum / problem.start[1].count()
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -533,7 +544,6 @@ class ClosestDotSearchAgent(SearchAgent):
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
 
-        
         searchFunction = search.bfs
         return searchFunction(problem)
         
