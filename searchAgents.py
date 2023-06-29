@@ -405,7 +405,7 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
             counter += walls[xy1[0]][j]
         count = count + [counter]
         sum = sum + [total]
-    return min(sum) + count
+    return min(sum) + min(count)
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
